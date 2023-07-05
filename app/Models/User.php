@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status'
     ];
 
     /**
@@ -41,4 +43,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function countUsers(){
+        $data=User::where('role','user')->count();
+        if($data){
+            return $data;
+        }
+        return 0;
+    }
 }

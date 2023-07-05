@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Illuminate\Http\Request;
+use Socialite;
+use App\User;
+use Auth;
 class LoginController extends Controller
 {
     /*
@@ -33,6 +36,10 @@ class LoginController extends Controller
      *
      * @return void
      */
+
+    public function credentials(Request $request){
+        return ['email'=>$request->email,'password'=>$request->password,'status'=>'active','role'=>'admin'];
+    }
     public function __construct()
     {
         $this->middleware('guest')->except('logout');

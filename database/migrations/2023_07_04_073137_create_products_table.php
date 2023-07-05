@@ -14,11 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->text('description');
             $table->decimal('price', $precision = 8, $scale = 2);
             $table->integer('quantity');
+            $table->text('photo');
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });

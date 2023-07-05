@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Product;
+
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -32,19 +34,23 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        // return $request->all();
         $this->validate($request,[
             'name'=>'string|required',
             'description'=>'string|nullable',
             'quantity'=>"required|numeric",
-            'price'=>'required|numeric'
+            'price'=>'required|numeric',
+            'photo'=>'string|required',
         ]);
 
         $data=$request->all();
-
+        // return $size;
+        // return $data;
         $status=Product::create($data);
         if($status){
             request()->session()->flash('success','Product Successfully added');
@@ -53,15 +59,16 @@ class ProductController extends Controller
             request()->session()->flash('error','Please try again!!');
         }
         return redirect()->route('product.index');
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
         //
     }
@@ -69,10 +76,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
         $product=Product::findOrFail($id);
         $items=Product::where('id',$id)->get();
@@ -83,8 +90,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -95,9 +102,11 @@ class ProductController extends Controller
             'description'=>'string|nullable',
             'quantity'=>"required|numeric",
             'price'=>'required|numeric',
+            'photo'=>'string|required',
         ]);
 
         $data=$request->all();
+        // return $data;
         $status=$product->fill($data)->save();
         if($status){
             request()->session()->flash('success','Product Successfully updated');
@@ -111,7 +120,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
