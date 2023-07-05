@@ -1942,18 +1942,18 @@ Version:1.0
 }
 .single-product .button-head {
 	background: #fff;
-	display: inline-block;
+	/* display: inline-block; */
 	height: 40px;
 	width: 100%;
-	position: absolute;
-	left: 0;
-	bottom: -50px;
-	z-index: 9;
-	height: 50px;
-	line-height: 50px;
-	-webkit-transition:all 0.4s ease;
-	-moz-transition:all 0.4s ease;
-	transition:all 0.4s ease;
+	/* position: absolute; */
+	/* left: 0; */
+	/* bottom: -50px; */
+	/* z-index: 9; */
+	/* height: 50px; */
+	/* line-height: 50px; */
+	/* -webkit-transition:all 0.4s ease; */
+	/* -moz-transition:all 0.4s ease; */
+	/* transition:all 0.4s ease; */
 }
 .single-product:hover .button-head{
 	bottom:0;

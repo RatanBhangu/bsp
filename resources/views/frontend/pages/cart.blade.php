@@ -38,16 +38,15 @@
 						<tbody id="cart_item_list">
 							<form action="{{route('cart.update')}}" method="POST">
 								@csrf
-								@if(Helper::getAllProductFromCart())
-									@foreach(Helper::getAllProductFromCart() as $key=>$cart)
+								@if(App\Http\Controllers\Controller::getAllProductFromCart())
+									@foreach(App\Http\Controllers\Controller::getAllProductFromCart() as $key=>$cart)
 										<tr>
 											@php
 											$photo=explode(',',$cart->product['photo']);
 											@endphp
 											<td class="image" data-title="No"><img src="{{$photo[0]}}" alt="{{$photo[0]}}"></td>
 											<td class="product-des" data-title="Description">
-												<p class="product-name"><a href="{{route('product-detail',$cart->product['slug'])}}" target="_blank">{{$cart->product['title']}}</a></p>
-												<p class="product-des">{!!($cart['summary']) !!}</p>
+												<p class="product-name"><a href="{{route('product-detail',$cart->product['id'])}}" target="_blank">{{$cart->product['name']}}</a></p>
 											</td>
 											<td class="price" data-title="Price"><span>${{number_format($cart['price'],2)}}</span></td>
 											<td class="qty" data-title="Qty"><!-- Input Order -->
@@ -104,13 +103,6 @@
 						<div class="row">
 							<div class="col-lg-8 col-md-5 col-12">
 								<div class="left">
-									<div class="coupon">
-									<form action="{{route('coupon-store')}}" method="POST">
-											@csrf
-											<input name="code" placeholder="Enter Your Coupon">
-											<button class="btn">Apply</button>
-										</form>
-									</div>
 									{{-- <div class="checkbox">`
 										@php
 											$shipping=DB::table('shippings')->where('status','active')->limit(1)->get();
@@ -122,13 +114,13 @@
 							<div class="col-lg-4 col-md-7 col-12">
 								<div class="right">
 									<ul>
-										<li class="order_subtotal" data-price="{{Helper::totalCartPrice()}}">Cart Subtotal<span>${{number_format(Helper::totalCartPrice(),2)}}</span></li>
+										<li class="order_subtotal" data-price="{{App\Http\Controllers\Controller::totalCartPrice()}}">Cart Subtotal<span>${{number_format(App\Http\Controllers\Controller::totalCartPrice(),2)}}</span></li>
 
 										@if(session()->has('coupon'))
 										<li class="coupon_price" data-price="{{Session::get('coupon')['value']}}">You Save<span>${{number_format(Session::get('coupon')['value'],2)}}</span></li>
 										@endif
 										@php
-											$total_amount=Helper::totalCartPrice();
+											$total_amount=App\Http\Controllers\Controller::totalCartPrice();
 											if(session()->has('coupon')){
 												$total_amount=$total_amount-Session::get('coupon')['value'];
 											}
@@ -197,10 +189,6 @@
 			</div>
 		</div>
 	</section>
-	<!-- End Shop Newsletter -->
-
-	<!-- Start Shop Newsletter  -->
-	@include('frontend.layouts.newsletter')
 	<!-- End Shop Newsletter -->
 
 @endsection

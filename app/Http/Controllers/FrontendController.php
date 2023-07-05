@@ -73,13 +73,13 @@ class FrontendController extends Controller
             $products->whereBetween('price',$price);
         }
 
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::orderBy('id','DESC')->limit(3)->get();
         // Sort by number
         if(!empty($_GET['show'])){
-            $products=$products->where('status','active')->paginate($_GET['show']);
+            $products=$products->paginate($_GET['show']);
         }
         else{
-            $products=$products->where('status','active')->paginate(9);
+            $products=$products->paginate(9);
         }
         // Sort by name , price, category
 
@@ -88,24 +88,9 @@ class FrontendController extends Controller
     }
     public function productLists(){
         $products=Product::query();
-
-        if(!empty($_GET['category'])){
-            $slug=explode(',',$_GET['category']);
-            // dd($slug);
-            $cat_ids=Category::select('id')->whereIn('slug',$slug)->pluck('id')->toArray();
-            // dd($cat_ids);
-            $products->whereIn('cat_id',$cat_ids)->paginate;
-            // return $products;
-        }
-        if(!empty($_GET['brand'])){
-            $slugs=explode(',',$_GET['brand']);
-            $brand_ids=Brand::select('id')->whereIn('slug',$slugs)->pluck('id')->toArray();
-            return $brand_ids;
-            $products->whereIn('brand_id',$brand_ids);
-        }
         if(!empty($_GET['sortBy'])){
-            if($_GET['sortBy']=='title'){
-                $products=$products->where('status','active')->orderBy('title','ASC');
+            if($_GET['sortBy']=='name'){
+                $products=$products->orderBy('name','ASC');
             }
             if($_GET['sortBy']=='price'){
                 $products=$products->orderBy('price','ASC');
@@ -121,13 +106,13 @@ class FrontendController extends Controller
             $products->whereBetween('price',$price);
         }
 
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::orderBy('id','DESC')->limit(3)->get();
         // Sort by number
         if(!empty($_GET['show'])){
-            $products=$products->where('status','active')->paginate($_GET['show']);
+            $products=$products->paginate($_GET['show']);
         }
         else{
-            $products=$products->where('status','active')->paginate(6);
+            $products=$products->paginate(6);
         }
         // Sort by name , price, category
 
@@ -147,40 +132,15 @@ class FrontendController extends Controller
                 $sortByURL .='&sortBy='.$data['sortBy'];
             }
 
-            $catURL="";
-            if(!empty($data['category'])){
-                foreach($data['category'] as $category){
-                    if(empty($catURL)){
-                        $catURL .='&category='.$category;
-                    }
-                    else{
-                        $catURL .=','.$category;
-                    }
-                }
-            }
-
-            $brandURL="";
-            if(!empty($data['brand'])){
-                foreach($data['brand'] as $brand){
-                    if(empty($brandURL)){
-                        $brandURL .='&brand='.$brand;
-                    }
-                    else{
-                        $brandURL .=','.$brand;
-                    }
-                }
-            }
-            // return $brandURL;
-
             $priceRangeURL="";
             if(!empty($data['price_range'])){
                 $priceRangeURL .='&price='.$data['price_range'];
             }
             if(request()->is('e-shop.loc/product-grids')){
-                return redirect()->route('product-grids',$catURL.$brandURL.$priceRangeURL.$showURL.$sortByURL);
+                return redirect()->route('product-grids',$priceRangeURL.$showURL.$sortByURL);
             }
             else{
-                return redirect()->route('product-lists',$catURL.$brandURL.$priceRangeURL.$showURL.$sortByURL);
+                return redirect()->route('product-lists',$priceRangeURL.$showURL.$sortByURL);
             }
     }
     public function productSearch(Request $request){

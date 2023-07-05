@@ -21,6 +21,8 @@ return new class extends Migration
             $table->float('total_amount');
             $table->integer('quantity');
             $table->enum('status',['new','process','delivered','cancel'])->default('new');
+            $table->enum('payment_method',['cod','paypal'])->default('cod');
+            $table->enum('payment_status',['paid','unpaid'])->default('unpaid');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
             $table->string('first_name');
             $table->string('last_name');

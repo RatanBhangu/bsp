@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Shipping;
-use App\User;
+use App\Models\User;
 use PDF;
 use Notification;
-use Helper;
 use Illuminate\Support\Str;
 use App\Notifications\StatusNotification;
 
@@ -56,7 +55,7 @@ class OrderController extends Controller
         ]);
         // return $request->all();
 
-        if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
+        if(empty(Cart::where('user_id',auth()->user()->id)->first())){
             request()->session()->flash('error','Cart is Empty !');
             return back();
         }
@@ -92,40 +91,33 @@ class OrderController extends Controller
         $order_data=$request->all();
         $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
         $order_data['user_id']=$request->user()->id;
-        $order_data['shipping_id']=$request->shipping;
-        $shipping=Shipping::where('id',$order_data['shipping_id'])->pluck('price');
         // return session('coupon')['value'];
-        $order_data['sub_total']=Helper::totalCartPrice();
-        $order_data['quantity']=Helper::cartCount();
+        $order_data['sub_total']=Controller::totalCartPrice();
+        $order_data['quantity']=Controller::cartCount();
         if(session('coupon')){
             $order_data['coupon']=session('coupon')['value'];
         }
         if($request->shipping){
             if(session('coupon')){
-                $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0]-session('coupon')['value'];
+                $order_data['total_amount']=Controller::totalCartPrice()+$shipping[0]-session('coupon')['value'];
             }
             else{
-                $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0];
+                $order_data['total_amount']=Controller::totalCartPrice()+$shipping[0];
             }
         }
         else{
             if(session('coupon')){
-                $order_data['total_amount']=Helper::totalCartPrice()-session('coupon')['value'];
+                $order_data['total_amount']=Controller::totalCartPrice()-session('coupon')['value'];
             }
             else{
-                $order_data['total_amount']=Helper::totalCartPrice();
+                $order_data['total_amount']=Controller::totalCartPrice();
             }
         }
         // return $order_data['total_amount'];
         $order_data['status']="new";
-        if(request('payment_method')=='paypal'){
-            $order_data['payment_method']='paypal';
-            $order_data['payment_status']='paid';
-        }
-        else{
+        
             $order_data['payment_method']='cod';
             $order_data['payment_status']='Unpaid';
-        }
         $order->fill($order_data);
         $status=$order->save();
         if($order)
@@ -136,7 +128,7 @@ class OrderController extends Controller
             'actionURL'=>route('order.show',$order->id),
             'fas'=>'fa-file-alt'
         ];
-        Notification::send($users, new StatusNotification($details));
+        
         if(request('payment_method')=='paypal'){
             return redirect()->route('payment')->with(['id'=>$order->id]);
         }
@@ -144,7 +136,7 @@ class OrderController extends Controller
             session()->forget('cart');
             session()->forget('coupon');
         }
-        Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
+        Cart::where('user_id', auth()->user()->id)->delete();
 
         // dd($users);        
         request()->session()->flash('success','Your product successfully placed in order');

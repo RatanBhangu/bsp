@@ -32,7 +32,7 @@ Route::get('/about-us','App\Http\Controllers\FrontendController@aboutUs')->name(
 Route::get('product-detail/{id}','App\Http\Controllers\FrontendController@productDetail')->name('product-detail');
 Route::post('/product/search','App\Http\Controllers\FrontendController@productSearch')->name('product.search');
 // Cart section
-Route::get('/add-to-cart/{slug}','App\Http\Controllers\CartController@addToCart')->name('add-to-cart')->middleware('user');
+Route::get('/add-to-cart/{id}','App\Http\Controllers\CartController@addToCart')->name('add-to-cart')->middleware('user');
 Route::post('/add-to-cart','App\Http\Controllers\CartController@singleAddToCart')->name('single-add-to-cart')->middleware('user');
 Route::get('cart-delete/{id}','App\Http\Controllers\CartController@cartDelete')->name('cart-delete');
 Route::post('cart-update','App\Http\Controllers\CartController@cartUpdate')->name('cart.update');
