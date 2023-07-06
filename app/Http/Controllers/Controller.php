@@ -18,7 +18,7 @@ class Controller extends BaseController
        
         if(Auth::check()){
             if($user_id=="") $user_id=auth()->user()->id;
-            return Cart::where('user_id',$user_id)->sum('quantity');
+            return Cart::where('user_id',$user_id)->where('order_id',null)->sum('quantity');
         }
         else{
             return 0;
@@ -32,7 +32,7 @@ class Controller extends BaseController
     public static function getAllProductFromCart($user_id=''){
         if(Auth::check()){
             if($user_id=="") $user_id=auth()->user()->id;
-            return Cart::with('product')->where('user_id',$user_id)->get();
+            return Cart::with('product')->where('user_id',$user_id)->where('order_id',null)->get();
         }
         else{
             return 0;
@@ -42,7 +42,7 @@ class Controller extends BaseController
     public static function totalCartPrice($user_id=''){
         if(Auth::check()){
             if($user_id=="") $user_id=auth()->user()->id;
-            return Cart::where('user_id',$user_id)->sum('amount');
+            return Cart::where('user_id',$user_id)->where('order_id',null)->sum('amount');
         }
         else{
             return 0;

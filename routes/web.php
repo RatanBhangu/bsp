@@ -50,7 +50,7 @@ Route::get('/product-lists','App\Http\Controllers\FrontendController@productList
 Route::match(['get','post'],'/filter','App\Http\Controllers\FrontendController@productFilter')->name('shop.filter');
 // Order Track
 Route::get('/product/track','App\Http\Controllers\OrderController@orderTrack')->name('order.track');
-Route::post('product/track/order','App\Http\Controllers\OrderController@productTrackOrder')->name('product.track.order');
+Route::post('product/track/order','App\Http\Controllers\OrderController@productTrackOrder')->name('product.track.order')->middleware('auth');
 
 
 

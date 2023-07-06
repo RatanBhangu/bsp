@@ -28,7 +28,7 @@ class CartController extends Controller
             return back();
         }
 
-        $already_cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $product->id)->first();
+        $already_cart = Cart::where('user_id', auth()->user()->id)->where('order_id',null)->where('product_id', $product->id)->first();
         // return $already_cart;
         if($already_cart) {
             // dd($already_cart);
@@ -70,7 +70,7 @@ class CartController extends Controller
             return back();
         }    
 
-        $already_cart = Cart::where('user_id', auth()->user()->id)->where('order_id',null)->where('product_id', $product->id)->first();
+        $already_cart = Cart::where('user_id', auth()->user()->id)->where('order_id',null)->where('order_id',null)->where('product_id', $product->id)->first();
 
         // return $already_cart;
 
@@ -125,14 +125,14 @@ class CartController extends Controller
                 if($quant > 0 && $cart) {
                     // return $quant;
 
-                    if($cart->product->stock < $quant){
+                    if($cart->product->quantity < $quant){
                         request()->session()->flash('error','Out of stock');
                         return back();
                     }
-                    $cart->quantity = ($cart->product->stock > $quant) ? $quant  : $cart->product->stock;
+                    $cart->quantity = ($cart->product->quantity > $quant) ? $quant  : $cart->product->quantity;
                     // return $cart;
                     
-                    if ($cart->product->stock <=0) continue;
+                    if ($cart->product->quantity <=0) continue;
                     $after_price=($cart->product->price-($cart->product->price*$cart->product->discount)/100);
                     $cart->amount = $after_price * $quant;
                     // return $cart->price;

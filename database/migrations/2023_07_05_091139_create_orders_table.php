@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('order_number')->unique();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->float('sub_total');

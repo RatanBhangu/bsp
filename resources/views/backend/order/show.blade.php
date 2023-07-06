@@ -52,6 +52,38 @@
       </tbody>
     </table>
 
+    <h5 class="card-header">Order Items</h5>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+            <th>S.N.</th>
+            <th>Product Id</th>
+            <th>Name</th>
+            <th>Photo</th>
+        </tr>
+      </thead>
+      <tbody>
+      @foreach($order->cart as $cart)
+        <tr>
+            <td>{{$cart->id}}</td>
+            <td>{{$cart->product_id}}</td>
+            <td>{{$cart->product->name}}</td>
+            <td>
+                @if($cart->product->photo)
+                    @php
+                      $photo=explode(',',$cart->product->photo);
+                      // dd($photo);
+                    @endphp
+                    <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->photo}}">
+                @else
+                    <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
+                @endif
+            </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+
     <section class="confirmation_part section_padding">
       <div class="order_boxes">
         <div class="row">
@@ -74,10 +106,6 @@
                     <tr>
                         <td>Order Status</td>
                         <td> : {{$order->status}}</td>
-                    </tr>
-                    <tr>
-                      <td>Coupon</td>
-                      <td> : $ {{number_format($order->coupon,2)}}</td>
                     </tr>
                     <tr>
                         <td>Total Amount</td>

@@ -22,6 +22,7 @@
               <th>Name</th>
               <th>Price</th>
               <th>Quantity</th>
+              <th>Photo</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -31,6 +32,7 @@
               <th>Name</th>
               <th>Price</th>
               <th>Quantity</th>
+              <th>Photo</th>
               <th>Action</th>
             </tr>
           </tfoot>

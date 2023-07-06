@@ -4,8 +4,7 @@
 
 @section('main-content')
 <div class="card">
-<h5 class="card-header">Order       <a href="{{route('order.pdf',$order->id)}}" class=" btn btn-sm btn-primary shadow-sm float-right"><i class="fas fa-download fa-sm text-white-50"></i> Generate PDF</a>
-  </h5>
+<h5 class="card-header">Order</h5>
   <div class="card-body">
     @if($order)
     <table class="table table-striped table-hover">
@@ -16,7 +15,6 @@
             <th>Name</th>
             <th>Email</th>
             <th>Quantity</th>
-            <th>Charge</th>
             <th>Total Amount</th>
             <th>Status</th>
             <th>Action</th>
@@ -29,7 +27,6 @@
             <td>{{$order->first_name}} {{$order->last_name}}</td>
             <td>{{$order->email}}</td>
             <td>{{$order->quantity}}</td>
-            <td>${{$order->shipping->price}}</td>
             <td>${{number_format($order->total_amount,2)}}</td>
             <td>
                 @if($order->status=='new')
@@ -51,6 +48,38 @@
             </td>
 
         </tr>
+      </tbody>
+    </table>
+
+    <h5 class="card-header">Order Items</h5>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+            <th>S.N.</th>
+            <th>Product Id</th>
+            <th>Name</th>
+            <th>Photo</th>
+        </tr>
+      </thead>
+      <tbody>
+      @foreach($order->cart as $cart)
+        <tr>
+            <td>{{$cart->id}}</td>
+            <td>{{$cart->product_id}}</td>
+            <td>{{$cart->product->name}}</td>
+            <td>
+                @if($cart->product->photo)
+                    @php
+                      $photo=explode(',',$cart->product->photo);
+                      // dd($photo);
+                    @endphp
+                    <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->photo}}">
+                @else
+                    <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
+                @endif
+            </td>
+        </tr>
+        @endforeach
       </tbody>
     </table>
 
@@ -76,13 +105,6 @@
                     <tr>
                         <td>Order Status</td>
                         <td> : {{$order->status}}</td>
-                    </tr>
-                    <tr>
-                      @php
-                          $shipping_charge=DB::table('shippings')->where('id',$order->shipping_id)->pluck('price');
-                      @endphp
-                        <td>Shipping Charge</td>
-                        <td> :${{$order->shipping->price}}</td>
                     </tr>
                     <tr>
                         <td>Total Amount</td>

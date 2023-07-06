@@ -55,7 +55,7 @@ class OrderController extends Controller
         ]);
         // return $request->all();
 
-        if(empty(Cart::where('user_id',auth()->user()->id)->first())){
+        if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
             request()->session()->flash('error','Cart is Empty !');
             return back();
         }
@@ -136,7 +136,13 @@ class OrderController extends Controller
             session()->forget('cart');
             session()->forget('coupon');
         }
-        Cart::where('user_id', auth()->user()->id)->delete();
+        Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
+        foreach($order->cart as $cart){
+            $product=$cart->product;
+            // return $product;
+            $product->quantity -=$cart->quantity;
+            $product->save();
+        }
 
         // dd($users);        
         request()->session()->flash('success','Your product successfully placed in order');
@@ -183,14 +189,6 @@ class OrderController extends Controller
         ]);
         $data=$request->all();
         // return $request->status;
-        if($request->status=='delivered'){
-            foreach($order->cart as $cart){
-                $product=$cart->product;
-                // return $product;
-                $product->stock -=$cart->quantity;
-                $product->save();
-            }
-        }
         $status=$order->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated order');
